@@ -12,8 +12,8 @@ public class playerControlScript : MonoBehaviour
 
     
     public KeyCode downKey = KeyCode.S;
-    public KeyCode leftKey = KeyCode.A;
-    public KeyCode rightKey = KeyCode.D;
+    //public KeyCode leftKey = KeyCode.A;
+    //public KeyCode rightKey = KeyCode.D;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode diveKey = KeyCode.LeftShift;
 
@@ -56,18 +56,12 @@ public class playerControlScript : MonoBehaviour
 
     private void FixedUpdate() {
         //Move(Vector3.down, downKey);
-        Move(Vector3.left, leftKey);
-        Move(Vector3.right, rightKey);
+        Move(Vector3.right, "Horizontal");
     }
 
-    void Move(Vector3 dir, KeyCode key)
+    void Move(Vector3 _dir, string _axis)
     {
-
-        if (Input.GetKey(key))
-        {
-            rb.velocity = new Vector2(dir.x * speed, rb.velocity.y);
-        }
-
+            rb.velocity = new Vector2(_dir.x * Input.GetAxis(_axis) * speed, rb.velocity.y);
     }
 
     void Jump()
