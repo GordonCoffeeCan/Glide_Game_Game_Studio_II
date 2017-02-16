@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class windPush : MonoBehaviour {
 
-    private bool _windPushed = false;
+    public static bool _windPushed = false;
+    public static float _windPushValue=6;
+
+  
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +22,7 @@ public class windPush : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D _col) {
         if (playerControlScript.isGliding == true && _windPushed == false) {
-            _col.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 6, ForceMode2D.Impulse);
+            _col.GetComponent<Rigidbody2D>().AddForce(Vector3.up * _windPushValue, ForceMode2D.Impulse);
             _windPushed = true;
         }
     }

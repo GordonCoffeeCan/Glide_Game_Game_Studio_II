@@ -9,6 +9,7 @@ public class playerControlScript : MonoBehaviour
     public float speed;
     public float jumpAmount;
     public float glideAmount;
+    public float diveAmount;
 
     
     public KeyCode downKey = KeyCode.S;
@@ -46,9 +47,10 @@ public class playerControlScript : MonoBehaviour
         Jump();
 
         if(isGliding == true) {
-            playerGravityScale = 0.2f;
+            playerGravityScale = glideAmount;
         } else {
             playerGravityScale = 1;
+            windPush._windPushed = false;
         }
 
         rb.gravityScale = playerGravityScale;
@@ -84,7 +86,7 @@ public class playerControlScript : MonoBehaviour
 
         else if (Input.GetKeyDown(diveKey))
         {
-            rb.gravityScale = 10;
+            rb.gravityScale = diveAmount;
             ShowWings(wing1, wing2, false);
             isGliding = false;
         }
@@ -99,7 +101,7 @@ public class playerControlScript : MonoBehaviour
 
         else if (Input.GetKeyUp(diveKey))
         {
-            rb.gravityScale = 1;
+            rb.gravityScale = 5;
             ShowWings(wing1, wing2, false);
             isGliding = false;
         }
