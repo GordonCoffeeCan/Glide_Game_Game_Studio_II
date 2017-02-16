@@ -17,7 +17,9 @@ public class playerControlScript : MonoBehaviour
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode diveKey = KeyCode.LeftShift;
 
-    public bool isGliding = false;
+    public static bool isGliding = false;
+
+    public static float playerGravityScale = 1;
 
     public static playerControlScript instance;
     
@@ -34,21 +36,28 @@ public class playerControlScript : MonoBehaviour
     void Start()
     {
 
-        wing1.active = false;
-        wing2.active = false;
+        ShowWings(wing1, wing2, false);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        Jump();
 
-        
-        Move(Vector3.down, downKey);
+        if(isGliding == true) {
+            playerGravityScale = 0.2f;
+        } else {
+            playerGravityScale = 1;
+        }
+
+        rb.gravityScale = playerGravityScale;
+    }
+
+    private void FixedUpdate() {
+        //Move(Vector3.down, downKey);
         Move(Vector3.left, leftKey);
         Move(Vector3.right, rightKey);
-        Jump();
-       
     }
 
     void Move(Vector3 dir, KeyCode key)
@@ -56,7 +65,7 @@ public class playerControlScript : MonoBehaviour
 
         if (Input.GetKey(key))
         {
-            transform.Translate(dir * speed * Time.deltaTime);
+            rb.velocity = new Vector2(dir.x * speed, rb.velocity.y);
         }
 
     }
@@ -67,15 +76,14 @@ public class playerControlScript : MonoBehaviour
 
         if (Input.GetKeyDown(jumpKey) && onGround == true)
         {
-            rb.AddForce(Vector3.up*jumpAmount);
+            rb.AddForce(Vector3.up * jumpAmount);
             onGround = false;
 
         }
         else if (Input.GetKeyDown(jumpKey))
         {
             rb.gravityScale = glideAmount;
-            wing1.active = true;
-            wing2.active = true;
+            ShowWings(wing1, wing2, true);
             isGliding = true;
       
         }
@@ -83,16 +91,14 @@ public class playerControlScript : MonoBehaviour
         else if (Input.GetKeyDown(diveKey))
         {
             rb.gravityScale = 10;
-            wing1.active = false;
-            wing2.active = false;
+            ShowWings(wing1, wing2, false);
             isGliding = false;
         }
 
         else if (Input.GetKeyUp(jumpKey))
         {
             rb.gravityScale = 1;
-            wing1.active = false;
-            wing2.active = false;
+            ShowWings(wing1, wing2, false);
             isGliding = false;
         }
 
@@ -100,8 +106,7 @@ public class playerControlScript : MonoBehaviour
         else if (Input.GetKeyUp(diveKey))
         {
             rb.gravityScale = 1;
-            wing1.active = false;
-            wing2.active = false;
+            ShowWings(wing1, wing2, false);
             isGliding = false;
         }
 
@@ -116,22 +121,11 @@ public class playerControlScript : MonoBehaviour
         {
             onGround = true;
         }
-        
-
-        Debug.Log("Dragon");
+        //Debug.Log("Dragon");
     }
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (isGliding == true)
-        {
-            rb.AddForce(Vector3.up * 500);
-
-        }
-    
-
+    private void ShowWings(GameObject _wing1, GameObject _wing2, bool _isShow = false) {
+        _wing1.SetActive(_isShow);
+        _wing2.SetActive(_isShow);
     }
-   
-
-
 }

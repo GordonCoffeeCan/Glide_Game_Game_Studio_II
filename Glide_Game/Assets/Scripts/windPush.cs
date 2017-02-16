@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class windPush : MonoBehaviour {
 
-    public Rigidbody2D player;
+    private bool _windPushed = false;
 
 	// Use this for initialization
 	void Start () {
@@ -15,8 +15,17 @@ public class windPush : MonoBehaviour {
     void Update()
     {
 
+    }
 
+    private void OnTriggerStay2D(Collider2D _col) {
+        if (playerControlScript.isGliding == true && _windPushed == false) {
+            _col.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 8, ForceMode2D.Impulse);
+            _windPushed = true;
+        }
+    }
 
+    private void OnTriggerExit2D(Collider2D _col) {
+        _windPushed = false;
     }
 
 }
