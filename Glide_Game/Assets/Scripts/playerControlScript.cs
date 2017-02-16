@@ -15,6 +15,7 @@ public class playerControlScript : MonoBehaviour
     public KeyCode leftKey = KeyCode.A;
     public KeyCode rightKey = KeyCode.D;
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode diveKey = KeyCode.LeftShift;
 
     public bool isGliding = false;
 
@@ -79,7 +80,24 @@ public class playerControlScript : MonoBehaviour
       
         }
 
+        else if (Input.GetKeyDown(diveKey))
+        {
+            rb.gravityScale = 10;
+            wing1.active = false;
+            wing2.active = false;
+            isGliding = false;
+        }
+
         else if (Input.GetKeyUp(jumpKey))
+        {
+            rb.gravityScale = 1;
+            wing1.active = false;
+            wing2.active = false;
+            isGliding = false;
+        }
+
+
+        else if (Input.GetKeyUp(diveKey))
         {
             rb.gravityScale = 1;
             wing1.active = false;
@@ -103,6 +121,16 @@ public class playerControlScript : MonoBehaviour
         Debug.Log("Dragon");
     }
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (isGliding == true)
+        {
+            rb.AddForce(Vector3.up * 500);
+
+        }
+    
+
+    }
    
 
 
