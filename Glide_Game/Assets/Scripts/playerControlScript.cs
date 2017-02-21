@@ -6,7 +6,7 @@ public class playerControlScript : MonoBehaviour
 {
 
 
-    public float speed;
+    public float speed = 5;
     public float jumpAmount;
     public float glideAmount;
     public float diveAmount;
@@ -33,6 +33,9 @@ public class playerControlScript : MonoBehaviour
     public GameObject wing1;
     public GameObject wing2;
 
+    private float lastVelocityX;
+    private bool isBoost = false;
+
     // Use this for initialization
     void Start()
     {
@@ -46,24 +49,41 @@ public class playerControlScript : MonoBehaviour
     {
         Jump();
 
-        if(isGliding == true) {
+        if (isGliding == true) {
             playerGravityScale = glideAmount;
         } else {
             playerGravityScale = 1;
             windPush._windPushed = false;
         }
-
         rb.gravityScale = playerGravityScale;
+
+        if (Input.GetKey(KeyCode.LeftAlt)) {
+            isBoost = true;
+        }else if (Input.GetKeyUp(KeyCode.LeftAlt)) {
+            isBoost = false;
+        }
+
+        if (rb.velocity.x > 0) {
+            lastVelocityX = 1;
+        } else if (rb.velocity.x < 0) {
+            lastVelocityX = -1;
+        } else {
+            lastVelocityX = 0;
+        }
     }
 
     private void FixedUpdate() {
         //Move(Vector3.down, downKey);
-        Move(Vector3.right, "Horizontal");
+        if (isBoost == false) {
+            Move(Vector3.right, "Horizontal");
+        } else {
+            Boost();
+        }
     }
 
     void Move(Vector3 _dir, string _axis)
     {
-            rb.velocity = new Vector2(_dir.x * Input.GetAxis(_axis) * speed, rb.velocity.y);
+        rb.velocity = new Vector2(_dir.x * Input.GetAxis(_axis) * speed, rb.velocity.y);
     }
 
     void Jump()
@@ -123,5 +143,9 @@ public class playerControlScript : MonoBehaviour
     private void ShowWings(GameObject _wing1, GameObject _wing2, bool _isShow = false) {
         _wing1.SetActive(_isShow);
         _wing2.SetActive(_isShow);
+    }
+
+    private void Boost() {
+        rb.velocity = new Vector2(lastVelocityX * speed * 3, rb.velocity.y);
     }
 }
